@@ -42,67 +42,86 @@ captionText.addEventListener('input', function() {
 // Main function to draw the polaroid
 function drawPolaroid() {
     if (!uploadedImage) return;
-
-    // Polaroid dimensions
-    const borderWidth = 40; // White border
-    const frameBorder = 2; // Colored frame
-    const bottomTextSpace = 80; // Extra space for text
     
-    // Calculate canvas size
-    const maxWidth = 500;
+    // TARGET SIZE: 1080×1080 final canvas
+    const finalSize = 1080;
+    const borderWidth = 60;      // White polaroid border
+    const frameBorder = 3;       // Colored frame width
+    const bottomTextSpace = 120; // Space for caption
+    
+    // Calculate image size (fits within the available space)
+    const availableSpace = finalSize - (borderWidth * 2) - (frameBorder * 2);
+    
     let imgWidth = uploadedImage.width;
     let imgHeight = uploadedImage.height;
     
-    // Resize if too large
-    if (imgWidth > maxWidth) {
-        imgHeight = (maxWidth / imgWidth) * imgHeight;
-        imgWidth = maxWidth;
-    }
-    
-    // Set canvas size (image + borders + text space)
-    canvas.width = imgWidth + (borderWidth * 2) + (frameBorder * 2);
-    canvas.height = imgHeight + (borderWidth * 2) + bottomTextSpace + (frameBorder * 2);
-    
-    // Draw colored frame (outer border)
-    ctx.fillStyle = borderColor.value;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw white polaroid border
-    ctx.fillStyle = 'white';
-    ctx.fillRect(
-        frameBorder, 
-        frameBorder, 
-        canvas.width - (frameBorder * 2), 
-        canvas.height - (frameBorder * 2)
+    // Scale image to fit
+    const scale = Math.min(
+        availableSpace / imgWidth,
+        (availableSpace - bottomTextSpace) / imgHeight
     );
     
-    // Draw the image
+    imgWidth = imgWidth * scale;
+    imgHeight = imgHeight * scale;
+    
+    // Set canvas to exact final size
+    canvas.width = finalSize;
+    canvas.height = finalSize;
+    
+    // Draw white polaroid background (outermost)
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw colored frame (around the photo)
+    ctx.fillStyle = borderColor.value;
+    ctx.fillRect(
+        borderWidth,
+        borderWidth,
+        canvas.width - (borderWidth * 2),
+        canvas.height - (borderWidth * 2) - bottomTextSpace
+    );
+    
+    // Draw the image (inside colored frame)
+    const imgX = borderWidth + frameBorder;
+    const imgY = borderWidth + frameBorder;
+    
     ctx.drawImage(
         uploadedImage,
-        borderWidth + frameBorder,
-        borderWidth + frameBorder,
-        imgWidth,
-        imgHeight
+        imgX,
+        imgY,
+        imgWidth - (frameBorder * 2),
+        imgHeight - (frameBorder * 2)
     );
     
     // Draw caption text
     if (captionText.value) {
-        ctx.fillStyle = borderColor.value;
-        ctx.font = 'bold 20px Arial';
+        ctx.fillStyle = '#333';
+        ctx.font = 'bold 32px Arial';
         ctx.textAlign = 'right';
         ctx.fillText(
             captionText.value,
-            canvas.width - borderWidth - frameBorder - 10,
-            canvas.height - 30
+            canvas.width - borderWidth - 20,
+            canvas.height - 50
         );
     }
 }
+
 
 // Download button
 downloadBtn.addEventListener('click', function() {
     if (!uploadedImage) {
         alert('Please upload a photo first!');
         return;
+    }
+
+    // Create filename from caption
+    let filename = 'my-polaroid'; // default name
+    if (captionText.value) {
+        filename = captionText.value
+            .toLowerCase()                    // Convert to lowercase
+            .replace(/[^a-z0-9\s]/g, '')     // Remove special characters
+            .trim()                           // Remove extra spaces
+            .replace(/\s+/g, '_');           // Replace spaces with underscores
     }
     
     const link = document.createElement('a');
