@@ -13,3 +13,9 @@ Upload a photo and automatically add:
 ## Status
 
 🚧 Currently under development
+## Features Coming Soon
+
+- [ ] Photo upload
+- [ ] Color picker
+- [ ] Custom text input
+- [ ] Download button
