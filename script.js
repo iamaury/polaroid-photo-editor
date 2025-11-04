@@ -85,12 +85,13 @@ uploadArea.addEventListener('dragover', (e) => {
 });
 
 uploadArea.addEventListener('dragleave', () => {
-    uploadArea.style.borderColor = '#ddd';
+    uploadArea.style.borderColor = '#E5E5EA';
 });
 
 uploadArea.addEventListener('drop', (e) => {
     e.preventDefault();
-    uploadArea.style.borderColor = '#ddd';
+    uploadArea.style.borderColor = '#E5E5EA';
+    
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) {
         loadImage(file);
@@ -110,31 +111,31 @@ uploadInput.addEventListener('change', (e) => {
 
 function loadImage(file) {
     const reader = new FileReader();
+    
     reader.onload = (e) => {
         const img = new Image();
+        
         img.onload = () => {
             uploadedImage = img;
             renderPolaroid();
         };
+        
         img.src = e.target.result;
     };
+    
     reader.readAsDataURL(file);
 }
 
 // ═══════════════════════════════════════════════════════════
-// RENDER POLAROID WITH EXACT TEMPLATE
+// RENDER POLAROID WITH EXACT DIMENSIONS
 // ═══════════════════════════════════════════════════════════
 
 function renderPolaroid() {
-    if (!uploadedImage) return;
-    
-    setupCanvas();
-    
-    // 1. WHITE BACKGROUND (entire canvas)
+    // Clear canvas with white background
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, TEMPLATE.CANVAS_SIZE, TEMPLATE.CANVAS_SIZE);
     
-    // 2. COLORED FRAME
+    // Draw colored frame
     const frameColor = colorPicker.value;
     ctx.fillStyle = frameColor;
     ctx.fillRect(
@@ -144,39 +145,41 @@ function renderPolaroid() {
         TEMPLATE.COLORED_FRAME.bottom - TEMPLATE.COLORED_FRAME.top
     );
     
-    // 3. PHOTO (COVER MODE - fills area, maintains aspect ratio, crops if needed)
-    const photo = TEMPLATE.PHOTO;
-    const imgAspect = uploadedImage.width / uploadedImage.height;
-    const photoAspect = photo.width / photo.height;
-    
-    let sourceX, sourceY, sourceWidth, sourceHeight;
-    
-    if (imgAspect > photoAspect) {
-        // Image is wider - crop left/right
-        sourceHeight = uploadedImage.height;
-        sourceWidth = sourceHeight * photoAspect;
-        sourceX = (uploadedImage.width - sourceWidth) / 2;
-        sourceY = 0;
-    } else {
-        // Image is taller - crop top/bottom
-        sourceWidth = uploadedImage.width;
-        sourceHeight = sourceWidth / photoAspect;
-        sourceX = 0;
-        sourceY = (uploadedImage.height - sourceHeight) / 2;
+    // Draw photo with COVER scaling (fill area, maintain aspect ratio, crop edges)
+    if (uploadedImage) {
+        const photoArea = TEMPLATE.PHOTO;
+        const targetRatio = photoArea.width / photoArea.height;
+        const imageRatio = uploadedImage.width / uploadedImage.height;
+        
+        let sourceX, sourceY, sourceWidth, sourceHeight;
+        
+        if (imageRatio > targetRatio) {
+            // Image is wider - crop sides
+            sourceHeight = uploadedImage.height;
+            sourceWidth = sourceHeight * targetRatio;
+            sourceX = (uploadedImage.width - sourceWidth) / 2;
+            sourceY = 0;
+        } else {
+            // Image is taller - crop top/bottom
+            sourceWidth = uploadedImage.width;
+            sourceHeight = sourceWidth / targetRatio;
+            sourceX = 0;
+            sourceY = (uploadedImage.height - sourceHeight) / 2;
+        }
+        
+        ctx.drawImage(
+            uploadedImage,
+            sourceX, sourceY, sourceWidth, sourceHeight,
+            photoArea.x, photoArea.y, photoArea.width, photoArea.height
+        );
     }
     
-    ctx.drawImage(
-        uploadedImage,
-        sourceX, sourceY, sourceWidth, sourceHeight,  // Source crop
-        photo.x, photo.y, photo.width, photo.height   // Destination
-    );
-    
-    // 4. CAPTION (right-aligned, baseline at y=972)
+    // Draw caption
     const caption = captionInput.value.trim();
     if (caption) {
         ctx.fillStyle = '#000000';
-        ctx.font = `${TEMPLATE.CAPTION.fontSize}px Arial, sans-serif`;
-        ctx.textAlign = 'right';
+        ctx.font = `${TEMPLATE.CAPTION.fontSize}px "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+        ctx.textAlign = TEMPLATE.CAPTION.alignment;
         ctx.textBaseline = 'alphabetic';
         
         ctx.fillText(
@@ -188,17 +191,31 @@ function renderPolaroid() {
 }
 
 // ═══════════════════════════════════════════════════════════
-// EVENT LISTENERS
+// EVENT LISTENERS FOR LIVE UPDATES
 // ═══════════════════════════════════════════════════════════
 
-colorPicker.addEventListener('input', renderPolaroid);
-captionInput.addEventListener('input', renderPolaroid);
+colorPicker.addEventListener('input', () => {
+    if (uploadedImage) {
+        renderPolaroid();
+    }
+});
+
+captionInput.addEventListener('input', () => {
+    if (uploadedImage) {
+        renderPolaroid();
+    }
+});
 
 // ═══════════════════════════════════════════════════════════
-// DOWNLOAD WITH CAPTION-BASED FILENAME
+// DOWNLOAD HANDLER
 // ═══════════════════════════════════════════════════════════
 
 downloadBtn.addEventListener('click', () => {
+    if (!uploadedImage) {
+        alert('Please upload a photo first!');
+        return;
+    }
+    
     // Generate filename from caption
     let filename = 'polaroid.png';
     const caption = captionInput.value.trim();
@@ -207,14 +224,13 @@ downloadBtn.addEventListener('click', () => {
         // Convert caption to filename:
         // "Lyon2, Septembre 2025" → "lyon2_septembre_2025.png"
         filename = caption
-            .toLowerCase()                          // lowercase
-            .replace(/[^a-z0-9\s]/g, '')           // remove special chars
-            .replace(/\s+/g, '_')                  // spaces to underscores
-            .replace(/_+/g, '_')                   // collapse multiple underscores
-            .replace(/^_|_$/g, '')                 // trim underscores
+            .toLowerCase()
+            .replace(/[^a-z0-9\s]/g, '')
+            .replace(/\s+/g, '_')
+            .replace(/_+/g, '_')
+            .replace(/^_|_$/g, '')
             + '.png';
         
-        // Fallback if caption becomes empty after cleanup
         if (filename === '.png') {
             filename = 'polaroid.png';
         }
@@ -230,7 +246,7 @@ downloadBtn.addEventListener('click', () => {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-    }, 'image/png', 1.0);  // Maximum quality PNG
+    }, 'image/png', 1.0);
 });
 
 // ═══════════════════════════════════════════════════════════
