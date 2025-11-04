@@ -42,70 +42,84 @@ captionText.addEventListener('input', function() {
 // Main function to draw the polaroid
 function drawPolaroid() {
     if (!uploadedImage) return;
-    
-    // TARGET SIZE: 1080×1080 final canvas
+
+    // HIGH QUALITY SETTINGS
     const finalSize = 1080;
-    const borderWidth = 60;      // White polaroid border
-    const frameBorder = 3;       // Colored frame width
-    const bottomTextSpace = 120; // Space for caption
-    
-    // Calculate image size (fits within the available space)
-    const availableSpace = finalSize - (borderWidth * 2) - (frameBorder * 2);
-    
+    const borderWidth = 60;       // White polaroid border
+    const frameBorder = 2;        // Colored frame (thin!)
+    const bottomSpace = 150;      // Space for caption at bottom
+
+    // Calculate available space for the photo
+    const availableWidth = finalSize - (borderWidth * 2) - (frameBorder * 2);
+    const availableHeight = finalSize - (borderWidth * 2) - (frameBorder * 2) - bottomSpace;
+
+    // Get original image dimensions
     let imgWidth = uploadedImage.width;
     let imgHeight = uploadedImage.height;
-    
-    // Scale image to fit
+
+    // Scale to fit available space while maintaining aspect ratio
     const scale = Math.min(
-        availableSpace / imgWidth,
-        (availableSpace - bottomTextSpace) / imgHeight
+        availableWidth / imgWidth,
+        availableHeight / imgHeight
     );
-    
-    imgWidth = imgWidth * scale;
-    imgHeight = imgHeight * scale;
-    
-    // Set canvas to exact final size
+
+    imgWidth = Math.floor(imgWidth * scale);
+    imgHeight = Math.floor(imgHeight * scale);
+
+    // Set canvas to ACTUAL high resolution
     canvas.width = finalSize;
     canvas.height = finalSize;
-    
-    // Draw white polaroid background (outermost)
+
+    // Enable high-quality rendering
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
+    // 1. Draw white polaroid background (fills entire canvas)
     ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw colored frame (around the photo)
+    ctx.fillRect(0, 0, finalSize, finalSize);
+
+    // 2. Draw colored frame (inside white border)
     ctx.fillStyle = borderColor.value;
     ctx.fillRect(
         borderWidth,
         borderWidth,
-        canvas.width - (borderWidth * 2),
-        canvas.height - (borderWidth * 2) - bottomTextSpace
+        finalSize - (borderWidth * 2),
+        finalSize - (borderWidth * 2)
     );
-    
-    // Draw the image (inside colored frame)
-    const imgX = borderWidth + frameBorder;
-    const imgY = borderWidth + frameBorder;
-    
+
+    // 3. Draw the photo (centered in the top area, leaving bottom for caption)
+    const photoX = borderWidth + frameBorder + ((availableWidth - imgWidth) / 2);
+    const photoY = borderWidth + frameBorder;
+
     ctx.drawImage(
         uploadedImage,
-        imgX,
-        imgY,
-        imgWidth - (frameBorder * 2),
-        imgHeight - (frameBorder * 2)
+        photoX,
+        photoY,
+        imgWidth,
+        imgHeight
     );
-    
-    // Draw caption text
+
+    // 4. Draw white space at bottom for caption
+    ctx.fillStyle = 'white';
+    ctx.fillRect(
+        borderWidth + frameBorder,
+        finalSize - borderWidth - bottomSpace,
+        availableWidth,
+        bottomSpace
+    );
+
+    // 5. Draw caption text in the white bottom space
     if (captionText.value) {
         ctx.fillStyle = '#333';
         ctx.font = 'bold 32px Arial';
-        ctx.textAlign = 'right';
+        ctx.textAlign = 'center';
         ctx.fillText(
             captionText.value,
-            canvas.width - borderWidth - 20,
-            canvas.height - 50
+            finalSize / 2,
+            finalSize - borderWidth - (bottomSpace / 2) + 10
         );
     }
 }
-
 
 // Download button
 downloadBtn.addEventListener('click', function() {
@@ -123,9 +137,9 @@ downloadBtn.addEventListener('click', function() {
             .trim()                           // Remove extra spaces
             .replace(/\s+/g, '_');           // Replace spaces with underscores
     }
-    
+
     const link = document.createElement('a');
-    link.download = 'my-polaroid.png';
-    link.href = canvas.toDataURL();
+    link.download = filename + '.png';  // ✅ FIXED! Now uses the filename variable
+    link.href = canvas.toDataURL('image/png', 1.0);  // Maximum quality
     link.click();
 });
