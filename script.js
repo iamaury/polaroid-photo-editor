@@ -50,7 +50,7 @@ const TEMPLATE = {
 // ═══════════════════════════════════════════════════════════
 
 const uploadInput = document.getElementById('photoUpload');    // ✅ Fixed
-const uploadArea = document.getElementById('uploadBox');       // ✅ Fixed
+const uploadArea = document.querySelector('.upload-section');
 const canvas = document.getElementById('photoCanvas');
 const ctx = canvas.getContext('2d', { 
     alpha: false,
@@ -77,9 +77,7 @@ function setupCanvas() {
 
 // ═══════════════════════════════════════════════════════════
 // FILE UPLOAD HANDLERS
-// ═══════════════════════════════════════════════════════════
-
-uploadArea.addEventListener('click', () => uploadInput.click());
+// ═══════════════════════════════════════════════════════════s
 
 uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault();
