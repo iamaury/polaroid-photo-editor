@@ -1,3 +1,5 @@
+document.addEventListener('DOMContentLoaded', function() {
+
 // ═══════════════════════════════════════════════════════════
 // POLAROID TEMPLATE - EXACT DIMENSIONS
 // Canvas: 1080×1080px
@@ -254,3 +256,5 @@ downloadBtn.addEventListener('click', () => {
 // ═══════════════════════════════════════════════════════════
 
 setupCanvas();
+
+}); // ✅ Close DOMContentLoaded
