@@ -47,15 +47,15 @@ const TEMPLATE = {
 // DOM ELEMENTS
 // ═══════════════════════════════════════════════════════════
 
-const uploadInput = document.getElementById('uploadInput');
-const uploadArea = document.getElementById('uploadArea');
+const uploadInput = document.getElementById('photoUpload');    // ✅ Fixed
+const uploadArea = document.getElementById('uploadBox');       // ✅ Fixed
 const canvas = document.getElementById('photoCanvas');
 const ctx = canvas.getContext('2d', { 
     alpha: false,
     desynchronized: false 
 });
-const colorPicker = document.getElementById('colorPicker');
-const captionInput = document.getElementById('captionInput');
+const colorPicker = document.getElementById('borderColor');    // ✅ Fixed
+const captionInput = document.getElementById('captionText');   // ✅ Fixed
 const downloadBtn = document.getElementById('downloadBtn');
 
 let uploadedImage = null;
