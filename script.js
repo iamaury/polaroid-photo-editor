@@ -176,9 +176,10 @@ function renderPolaroid() {
     
     // Draw caption
     const caption = captionInput.value.trim();
+    const captionColor = colorPicker.value;
     if (caption) {
-        ctx.fillStyle = '#000000';
-        ctx.font = `${TEMPLATE.CAPTION.fontSize}px "Garamond", serif`;
+        ctx.fillStyle = captionColor;
+        ctx.font = `${TEMPLATE.CAPTION.fontSize}px "Homemade Apple", cursive`;
         ctx.textAlign = TEMPLATE.CAPTION.alignment;
         ctx.textBaseline = 'alphabetic';
         
