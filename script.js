@@ -6,41 +6,41 @@ document.addEventListener('DOMContentLoaded', function() {
 // ═══════════════════════════════════════════════════════════
 
 const TEMPLATE = {
-    CANVAS_SIZE: 1080,
+    CANVAS_SIZE: 2160,
     
     // White polaroid borders
     WHITE_BORDER: {
-        top: 96,
-        left: 74,
-        right: 74,
-        bottom: 285
+        top: 192,
+        left: 148,
+        right: 148,
+        bottom: 570
     },
     
     // Colored frame (between white border and photo)
     COLORED_FRAME: {
-        left: 74,
-        top: 96,
-        right: 1006,
-        bottom: 795,
+        left: 148,
+        top: 192,
+        right: 2012,
+        bottom: 1590,
         thickness: {
-            horizontal: 16,  // left/right
-            vertical: 12     // top/bottom
+            horizontal: 32,  // left/right
+            vertical: 24     // top/bottom
         }
     },
     
     // Photo area
     PHOTO: {
-        x: 90,
-        y: 108,
-        width: 900,
-        height: 675
+        x: 180,
+        y: 216,
+        width: 1800,
+        height: 1350
     },
     
     // Caption
     CAPTION: {
-        fontSize: 48,
-        baseline: 972,  // 1080 - 108
-        rightEdge: 990, // 1080 - 90
+        fontSize: 96,
+        baseline: 1944,  // 2160 - 216
+        rightEdge: 1980, // 2160 - 180
         alignment: 'right'
     }
 };
