@@ -38,7 +38,7 @@ const TEMPLATE = {
     
     // Caption
     CAPTION: {
-        fontSize: 28,
+        fontSize: 32,
         baseline: 972,  // 1080 - 108
         rightEdge: 990, // 1080 - 90
         alignment: 'right'
@@ -178,7 +178,7 @@ function renderPolaroid() {
     const caption = captionInput.value.trim();
     if (caption) {
         ctx.fillStyle = '#000000';
-        ctx.font = `${TEMPLATE.CAPTION.fontSize}px "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+        ctx.font = `${TEMPLATE.CAPTION.fontSize}px "Garamond", serif`;
         ctx.textAlign = TEMPLATE.CAPTION.alignment;
         ctx.textBaseline = 'alphabetic';
         
