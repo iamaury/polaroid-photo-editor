@@ -38,7 +38,7 @@ const TEMPLATE = {
     
     // Caption
     CAPTION: {
-        fontSize: 40,
+        fontSize: 48,
         baseline: 972,  // 1080 - 108
         rightEdge: 990, // 1080 - 90
         alignment: 'right'
@@ -181,7 +181,7 @@ function renderPolaroid() {
         ctx.fillStyle = captionColor;
         ctx.font = `${TEMPLATE.CAPTION.fontSize}px "Homemade Apple", cursive`;
         ctx.textAlign = TEMPLATE.CAPTION.alignment;
-        ctx.textBaseline = 'alphabetic';
+        ctx.textBaseline = 'middle';
         
         ctx.fillText(
             caption,
