@@ -38,7 +38,7 @@ const TEMPLATE = {
     
     // Caption
     CAPTION: {
-        fontSize: 60,
+        fontSize: 40,
         baseline: 972,  // 1080 - 108
         rightEdge: 990, // 1080 - 90
         alignment: 'right'
