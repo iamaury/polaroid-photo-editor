@@ -99,17 +99,34 @@ input[type="text"]:focus {
 
 /* Preview Section */
 .preview-section {
-    margin: 30px 0;
-    text-align: center;
+   width: 100%;
+    max-width: 1080px; /* Desktop max size */
+    margin: 20px auto;
+    display: block;
 }
 
 #photoCanvas {
-    width: 500px;
-    height: 500px;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 100%; /* Always fit container */
+    height: auto; /* Maintain aspect ratio */
+    max-width: 100%;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
+}
+
+/* Mobile specific adjustments */
+@media (max-width: 768px) {
+    #photoCanvas {
+        max-width: 90vw; /* 90% of screen width */
+        margin: 10px auto;
+    }
+    
+    #preview {
+        max-width: 100%;
+        padding: 0 10px;
+    }
 }
 
 /* Download Button */
