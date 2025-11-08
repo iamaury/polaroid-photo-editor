@@ -5,10 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Polaroid Photo Editor</title>
 
-    <link rel="stylesheet" href="style.css">
+    <!-- EXTERNAL LIBRARIES -->
+     <!-- GOOGLE FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap" rel="stylesheet">
+    <!-- Vibrant.js - Color Palette Extraction -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vibrant.js/1.0.0/Vibrant.min.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
 
 </head>
 <body>
@@ -18,20 +24,28 @@
         <!-- Upload Section -->
         <div class="upload-section">
             <label for="photoUpload" class="upload-label">
-                Upload Your Photo
+                Insère ta photo 
             </label>
             <input type="file" id="photoUpload" accept="image/*">
         </div>
 
         <!-- Color Picker Section -->
-        <div class="color-section">
-            <label for="borderColor">Choose Border Color:</label>
-            <input type="color" id="borderColor" value="#ff6b9d">
+        <div class="control-group">
+            <label for="borderColor">Choisis ta couleur de bordure :</label>
+            <div class="color-input-wrapper">
+                <input type="color" id="borderColor" value="#ffffff">
+        
+                <!-- Color presets from image (powered by Vibrant.js) -->
+                <div id="colorPresets" class="color-presets">
+                    <!-- Buttons will be added here automatically by JavaScript -->
+                </div>
+            </div>
         </div>
+
 
         <!-- Text Input Section -->
         <div class="text-section">
-            <label for="captionText">Add Caption:</label>
+            <label for="captionText">Ajoute ton Titre :</label>
             <input type="text" id="captionText" placeholder="Paris, December 2024" maxlength="50">
         </div>
 
@@ -42,7 +56,7 @@
 
         <!-- Download Button -->
         <button id="downloadBtn" class="download-btn">
-            ⬇️ Download Your Polaroid
+            ⬇️ Télécharges ton Polaroid
         </button>
     </div>
 

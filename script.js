@@ -76,6 +76,52 @@ function setupCanvas() {
 }
 
 // ═══════════════════════════════════════════════════════════
+// VIBRANT.JS - COLOR EXTRACTION
+// ═══════════════════════════════════════════════════════════
+
+function extractColorsFromImage(imgElement) {
+    const vibrant = new Vibrant(imgElement);
+    const swatches = vibrant.swatches();
+    
+    // Clear previous color presets
+    const presetsContainer = document.getElementById('colorPresets');
+    if (!presetsContainer) return; // Safety check
+    
+    presetsContainer.innerHTML = '';
+    
+    // Available color profiles from Vibrant.js
+    const colorProfiles = [
+        'Vibrant',
+        'DarkVibrant', 
+        'LightVibrant',
+        'Muted',
+        'DarkMuted',
+        'LightMuted'
+    ];
+    
+    // Create a button for each available color
+    colorProfiles.forEach(profile => {
+        const swatch = swatches[profile];
+        
+        // Only create button if color exists (sometimes null)
+        if (swatch) {
+            const button = document.createElement('button');
+            button.className = 'color-preset-btn';
+            button.style.backgroundColor = swatch.getHex();
+            button.title = `${profile}: ${swatch.getHex()}`; // Tooltip shows name + hex
+            
+            // Click handler - apply color to border
+            button.addEventListener('click', function() {
+                colorPicker.value = swatch.getHex();
+                renderPolaroid(); // Refresh the polaroid
+            });
+            
+            presetsContainer.appendChild(button);
+        }
+    });
+}
+
+// ═══════════════════════════════════════════════════════════
 // FILE UPLOAD HANDLERS
 // ═══════════════════════════════════════════════════════════s
 
@@ -117,6 +163,7 @@ function loadImage(file) {
         
         img.onload = () => {
             uploadedImage = img;
+            extractColorsFromImage(img);
             renderPolaroid();
         };
         

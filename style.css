@@ -151,3 +151,50 @@ input[type="text"]:focus {
 .download-btn:active {
     transform: translateY(0);
 }
+
+/* ═══════════════════════════════════════════════════════════
+   COLOR PRESETS - VIBRANT.JS
+   Auto-generated color suggestions from uploaded photos
+   ═══════════════════════════════════════════════════════════ */
+
+.color-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.color-presets {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 5px;
+}
+
+.color-preset-btn {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #ddd;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.color-preset-btn:hover {
+    transform: scale(1.15);
+    border-color: #333;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.color-preset-btn:active {
+    transform: scale(0.95);
+}
+
+/* Optional: Add a subtle label */
+.color-presets::before {
+    content: "Suggested colors:";
+    font-size: 12px;
+    color: #666;
+    width: 100%;
+    margin-bottom: 5px;
+}
